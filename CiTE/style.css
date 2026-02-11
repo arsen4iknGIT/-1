@@ -1,0 +1,82 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #ffe6e6;
+    overflow-x: hidden;
+}
+
+.screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    transition: opacity 0.5s ease;
+}
+
+.hidden { display: none; opacity: 0; }
+
+/* Кнопки */
+.buttons { position: relative; margin-top: 20px; }
+button {
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    margin: 0 10px;
+}
+#yes-btn { background: #ff4d4d; color: white; }
+#no-btn { background: #ccc; position: absolute; }
+
+/* Сітка сердечок */
+.hearts-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+    padding: 20px;
+}
+
+.heart-item {
+    cursor: pointer;
+    font-size: 80px;
+    filter: drop-shadow(0 5px 15px rgba(255, 77, 77, 0.4));
+    transition: transform 0.3s ease;
+}
+
+.heart-item:hover { transform: scale(1.2) rotate(10deg); }
+
+/* Модальне вікно (Валентинка) */
+.modal {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+}
+
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    position: relative;
+    max-width: 800px;
+    width: 90%;
+    animation: openCard 0.6s ease-out;
+}
+
+@keyframes openCard {
+    from { transform: scale(0); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.valentine-card { display: flex; gap: 20px; }
+.v-left img { width: 300px; border-radius: 10px; }
+.v-right { font-size: 1.2rem; color: #555; line-height: 1.6; }
+
+.close-btn {
+    position: absolute; top: 10px; right: 20px;
+    font-size: 30px; cursor: pointer;
+}

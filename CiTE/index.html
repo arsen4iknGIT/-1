@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тобі, моя кохана ❤️</title>
+    <style>
+        :root {
+            --bg-color: #fff0f3;
+            --main-pink: #ff4d6d;
+            --dark-pink: #c9184a;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ПЕРШИЙ ЕКРАН */
+        #welcome-screen {
+            text-align: center;
+            transition: opacity 0.5s ease;
+        }
+
+        h1 { color: var(--dark-pink); margin-bottom: 30px; }
+
+        .btn-group {
+            position: relative;
+            height: 100px;
+            width: 300px;
+            margin: 0 auto;
+        }
+
+        button {
+            padding: 15px 35px;
+            font-size: 18px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+
+        #yes-btn {
+            background-color: var(--main-pink);
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 77, 109, 0.3);
+        }
+
+        #no-btn {
+            background-color: #adb5bd;
+            color: white;
+            position: absolute;
+            left: 170px;
+            z-index: 1000;
+        }
+
+        /* ДРУГИЙ ЕКРАН (СЕРДЕЧКА) */
+        #main-content {
+            display: none;
+            text-align: center;
+            width: 100%;
+            max-width: 900px;
+            animation: fadeIn 1s;
+        }
+
+        .hearts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 40px;
+            padding: 40px;
+            justify-items: center;
+        }
+
+        .heart {
+            font-size: 70px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            user-select: none;
+            filter: drop-shadow(0 5px 10px rgba(255, 77, 109, 0.2));
+        }
+
+        .heart:hover {
+            transform: scale(1.3) rotate(10deg);
+        }
+
+        /* ВІКНО ВАЛЕНТИНКИ */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(5px);
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .valentine-card {
+            background: white;
+            border-radius: 20px;
+            display: flex;
+            flex-direction: row;
+            width: 90%;
+            max-width: 800px;
+            overflow: hidden;
+            position: relative;
+            animation: popUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @media (max-width: 650px) {
+            .valentine-card { flex-direction: column; }
+            .v-left img { width: 100% !important; height: 300px !important; }
+        }
+
+        .v-left img {
+            width: 350px;
+            height: 450px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .v-right {
+            padding: 40px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: #fff;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px; right: 20px;
+            font-size: 35px;
+            cursor: pointer;
+            color: #333;
+            z-index: 10;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes popUp { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    </style>
+</head>
+<body>
+
+    <div id="welcome-screen">
+        <h1>Ти станеш моєю валентинкою? ❤️</h1>
+        <div class="btn-group">
+            <button id="yes-btn">ТАК!</button>
+            <button id="no-btn">Ні</button>
+        </div>
+    </div>
+
+    <div id="main-content">
+        <h1>Натисни на кожне сердечко...</h1>
+        <div class="hearts-grid" id="hearts-container"></div>
+    </div>
+
+    <div id="modal" class="modal">
+        <div class="valentine-card">
+            <span class="close-btn">&times;</span>
+            <div class="v-left">
+                <img id="modal-img" src="" alt="Фото спогаду">
+            </div>
+            <div class="v-right">
+                <h2 style="color: var(--main-pink); margin-top: 0;">Для тебе...</h2>
+                <p id="modal-text" style="font-size: 1.1rem; line-height: 1.6; color: #444;"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- НАЛАШТУВАННЯ: ВСТАВ СВОЇ ДАНІ ТУТ ---
+
+        // 1. Встав сюди прямі посилання на свої фото (мають закінчуватися на .jpg або .png)
+       // 1. Встав сюди прямі посилання на свої фото
+        const photoLinks = [
+            "https://i.ibb.co/v4rN3K24/photo1-jpg.jpg",
+            "https://i.ibb.co/Jwfn0jVj/photo2-jpg.jpg",
+            "https://i.ibb.co/PZHMVGTr/photo3-jpg.jpg",
+            "https://i.ibb.co/kbLZzqr/photo4-jpg.jpg",
+            "https://i.ibb.co/j9pJgkR0/photo5-jpg.jpg",
+            "https://i.ibb.co/ynDJDDCq/photo6-jpg.jpg"
+        ];
+
+        // 2. Встав тексти для кожної фотографії
+       const texts = [
+            "Кожна хвилина поруч із тобою — це найкращий момент мого дня. Дякую за твою ніжність! ❤️",
+            "Твоя посмішка здатна розігнати будь-які хмари. Ти моє сонечко, яке світить навіть уночі. ✨",
+            "Я ціную в тобі все: твою доброту, твій сміх і те, як ти мене розумієш без зайвих слів. 🌹",
+            "З тобою я відчуваю себе справжнім. Дякую, що надихаєш мене ставати кращим кожного дня! 💪❤️",
+            "Ти — мій найулюбленіший спогад і моя найпрекрасніша реальність. Люблю тебе безмежно! 🔒",
+            "Нехай це маленьке свято нагадає тобі, наскільки ти особлива для мене. Будьмо щасливі разом! 🥂❤️"
+        ];
+
+        // --- ЛОГІКА САЙТУ ---
+
+        const noBtn = document.getElementById('no-btn');
+        const yesBtn = document.getElementById('yes-btn');
+        const welcomeScreen = document.getElementById('welcome-screen');
+        const mainContent = document.getElementById('main-content');
+        const modal = document.getElementById('modal');
+
+        // Кнопка "Ні" тікає
+        noBtn.addEventListener('mouseover', () => {
+            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
+            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+            
+            noBtn.style.position = 'fixed';
+            noBtn.style.left = x + 'px';
+            noBtn.style.top = y + 'px';
+        });
+
+        // Кнопка "Так" відкриває сердечка
+        yesBtn.addEventListener('click', () => {
+            welcomeScreen.style.display = 'none';
+            mainContent.style.display = 'block';
+            renderHearts();
+        });
+
+        // Створення 6 сердечок
+        function renderHearts() {
+            const container = document.getElementById('hearts-container');
+            if(container.innerHTML !== "") return;
+
+            for (let i = 0; i < 6; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.innerHTML = '❤️';
+                heart.onclick = () => {
+                    document.getElementById('modal-img').src = photoLinks[i];
+                    document.getElementById('modal-text').innerText = texts[i];
+                    modal.style.display = 'flex';
+                };
+                container.appendChild(heart);
+            }
+        }
+
+        // Закриття вікна
+        document.querySelector('.close-btn').onclick = () => {
+            modal.style.display = 'none';
+        };
+
+        window.onclick = (e) => {
+            if (e.target == modal) modal.style.display = 'none';
+        };
+    </script>
+</body>
+</html>
